@@ -13,18 +13,25 @@
       <pubDate>Fri, 03 Feb 2023 15:48:39 +0800</pubDate>
       
       <guid>http://cfl717.github.io/about/</guid>
-      <description>about hugo intall</description>
+      <description>hugo安装 hugo intall</description>
     </item>
     
     <item>
-      <title>Hugo</title>
+      <title>golang</title>
       <link>http://cfl717.github.io/post/golang01/</link>
       <pubDate>Fri, 03 Feb 2023 15:47:27 +0800</pubDate>
       
       <guid>http://cfl717.github.io/post/golang01/</guid>
-      <description>访问公开结构的私有字段和方法 背景 项目开发中需要解析时区文件并返回当前时间指定时区的信息，golang中time.Location的结构负责时区解析和查询时区信息，但是对应的lookup方法和其中zone字段都是私有的。 公开结构私有方法访问 golang使用go:linkname注解支持将公开结构私有方法映射到自定义的方法中，则time.Location和私有方法lookup的映射方式，如下所示：
+      <description>访问公开结构的私有字段和方法 背景 项目开发中需要解析时区文件并返回当前时间指定时区的信息，golang中time.Location的结构负责时区解析和查询时区信息，但是对应的lookup方法和其中zone字段都是私有的。 公开结构私有方法访问
+golang使用go:linkname注解支持将公开结构私有方法映射到自定义的方法中，则time.Location和私有方法lookup的映射方式，如下所示：
 //go:linkname public_location_lookup time.(*Location).lookup func public_location_lookup(loc *time.Location, sec int64) (name string, offset int, start, end int64) loc, _ := time.LoadLocationFromTZData(&amp;#34;loc&amp;#34;, data) name, offset, isdst, end := public_location_lookup(loc, sec) 使用前必须导入unsafe包。
-● go:linkname 的第一个参数必须和自定义的方法名一致，第二个参数为{所在包名}.{结构名}.{方法名} ● 自定义方法第一个参数为映射方法所属结构体，第二个参数开始和映射方法参数一致。返回参数也须和映射方法一致。 备注： 注意结构体定义方法时，使用是结构体还是结构体指针。像上面的time.Location定时lookup时使用的是结构体指针，所以需要使用time.(*Location).lookup形式，以及传入的参数也是loc *time.Location 公开结构私有字段访问 使用私有方法lookup获得时区名称后，还需要获取时区信息。这需要访问Location结构的私有字段zone。 如下所示，本地定义一个Location相同结构，因为只需要前两个字段，所以只需要下面这样定义即可。再通过unsafe包方法将loc这个time.Location结构转换成本地能访问的自定义Location结构
+● go:linkname 的第一个参数必须和自定义的方法名一致，第二个参数为{所在包名}.{结构名}.{方法名}
+● 自定义方法第一个参数为映射方法所属结构体，第二个参数开始和映射方法参数一致。返回参数也须和映射方法一致。
+备注：
+注意结构体定义方法时，使用是结构体还是结构体指针。像上面的time.Location定时lookup时使用的是结构体指针，所以需要使用time.(*Location).lookup形式，以及传入的参数也是loc *time.Location
+公开结构私有字段访问
+使用私有方法lookup获得时区名称后，还需要获取时区信息。这需要访问Location结构的私有字段zone。
+如下所示，本地定义一个Location相同结构，因为只需要前两个字段，所以只需要下面这样定义即可。再通过unsafe包方法将loc这个time.Location结构转换成本地能访问的自定义Location结构
 unsafeLoc := (*Location)(unsafe.Pointer(uintptr(unsafe.Pointer(loc)))) //结构名称可以任意定义，只要保存结构和time.Location相同 //这里只要前两个字段，所以保存前两个字段类型及结构与time.Location一致 type Location struct { _ string zone []zone } type zone struct { name string // abbreviated name, &amp;#34;CET&amp;#34; offset int // seconds east of UTC isDST bool // is this zone Daylight Savings Time?</description>
     </item>
     
