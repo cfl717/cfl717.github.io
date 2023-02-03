@@ -1,22 +1,83 @@
-<html>  
-    <head>
-        <meta charset="utf-8"/>
-        <script src="wasm_exec.js"></script>
-        <script>
-            const go = new Go();
-            WebAssembly.instantiateStreaming(fetch("json.wasm"), go.importObject).then((result) => {
-                go.run(result.instance);
-            });
-        </script>
-    </head>
-    <body>
-         <textarea id="jsoninput" name="jsoninput" cols="80" rows="20"></textarea>
-         <input id="button" type="submit" name="button" value="pretty json" onclick="json(jsoninput.value)"/>
-         <textarea id="jsonoutput" name="jsonoutput" cols="80" rows="20"></textarea>
-    </body>
-    <script>
-        var json = function(input) {
-            jsonoutput.value = formatJSON(input)
-        }
-     </script>
-</html>  
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.110.0">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My New Hugo Site</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="http://cfl717.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="http://cfl717.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="http://cfl717.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="http://cfl717.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="http://cfl717.github.io/index.xml" rel="alternate" type="application/rss+xml" title="My New Hugo Site" />
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="http://cfl717.github.io/"><h1>My New Hugo Site</h1></a>
+      <p class="lead">
+      An elegant open source and mobile first theme for <a href="http://hugo.spf13.com">hugo</a> made by <a href="http://twitter.com/mdo">@mdo</a>. Originally made for Jekyll.
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="http://cfl717.github.io/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2023. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="posts">
+<article class="post">
+  <h1 class="post-title">
+    <a href="http://cfl717.github.io/about/">About</a>
+  </h1>
+  <time datetime="2023-02-03T15:48:39&#43;0800" class="post-date">Fri, Feb 3, 2023</time>
+  about hugo intall
+  
+</article><article class="post">
+  <h1 class="post-title">
+    <a href="http://cfl717.github.io/post/golang01/">Hugo</a>
+  </h1>
+  <time datetime="2023-02-03T15:47:27&#43;0800" class="post-date">Fri, Feb 3, 2023</time>
+  访问公开结构的私有字段和方法 背景 项目开发中需要解析时区文件并返回当前时间指定时区的信息，golang中time.Location的结构负责时区解析和查询时区信息，但是对应的lookup方法和其中zone字段都是私有的。 公开结构私有方法访问 golang使用go:linkname注解支持将公开结构私有方法映射到自定义的方法中，则time.Location和私有方法lookup的映射方式，如下所示：
+//go:linkname public_location_lookup time.(*Location).lookup func public_location_lookup(loc *time.Location, sec int64) (name string, offset int, start, end int64) loc, _ := time.LoadLocationFromTZData(&#34;loc&#34;, data) name, offset, isdst, end := public_location_lookup(loc, sec) 使用前必须导入unsafe包。
+● go:linkname 的第一个参数必须和自定义的方法名一致，第二个参数为{所在包名}.{结构名}.{方法名} ● 自定义方法第一个参数为映射方法所属结构体，第二个参数开始和映射方法参数一致。返回参数也须和映射方法一致。 备注： 注意结构体定义方法时，使用是结构体还是结构体指针。像上面的time.Location定时lookup时使用的是结构体指针，所以需要使用time.(*Location).lookup形式，以及传入的参数也是loc *time.Location 公开结构私有字段访问 使用私有方法lookup获得时区名称后，还需要获取时区信息。这需要访问Location结构的私有字段zone。 如下所示，本地定义一个Location相同结构，因为只需要前两个字段，所以只需要下面这样定义即可。再通过unsafe包方法将loc这个time.Location结构转换成本地能访问的自定义Location结构
+unsafeLoc := (*Location)(unsafe.Pointer(uintptr(unsafe.Pointer(loc)))) //结构名称可以任意定义，只要保存结构和time.Location相同 //这里只要前两个字段，所以保存前两个字段类型及结构与time.Location一致 type Location struct { _ string zone []zone } type zone struct { name string // abbreviated name, &#34;CET&#34; offset int // seconds east of UTC isDST bool // is this zone Daylight Savings Time?
+  
+  <div class="read-more-link">
+    <a href="/post/golang01/">Read More…</a>
+  </div>
+  
+</article>
+</div>
+    </main>
+
+    
+      
+    
+  </body>
+</html>
